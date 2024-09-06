@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api_ska.controllers;
 
-[Route("[controller]")]
+[Route("api/v1/[controller]")]
 public class AccountController : ControllerBase
 {
     [HttpGet]
