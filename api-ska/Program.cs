@@ -1,7 +1,9 @@
+using api_ska.services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+builder.Services.AddSingleton<StaticStorageService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
