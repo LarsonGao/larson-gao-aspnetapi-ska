@@ -8,11 +8,12 @@ namespace api_ska.controllers;
 public class AccountController : ControllerBase
 {
     private readonly StaticStorageService _storageService;
+
     public AccountController(StaticStorageService storageService)
     {
         _storageService = storageService;
     }
-    
+
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -23,15 +24,16 @@ public class AccountController : ControllerBase
             data = _storageService.accounts
         });
     }
-    
+
     [HttpPost]
     public IActionResult Create([FromBody] Account account)
     {
         account.id = _storageService.nextId++;
-        _storageService.accounts.Add(account);
 
         if (ModelState.IsValid)
         {
+            _storageService.accounts.Add(account);
+
             return Ok(new Response
             {
                 status = 200,
@@ -47,16 +49,15 @@ public class AccountController : ControllerBase
                 message = "Bad Request",
                 data = ModelState
             });
-
         }
     }
 
     [HttpPatch("{id}")]
-    public IActionResult Update([FromRoute]int id, [FromBody] UpdateParameters parameter)
+    public IActionResult Update([FromRoute] int id, [FromBody] UpdateParameters parameter)
     {
         var record = _storageService.accounts.Find(r => r.id == id);
-        
-        if(record == null)
+
+        if (record == null)
         {
             return NotFound(new Response
             {
@@ -65,15 +66,18 @@ public class AccountController : ControllerBase
                 data = null
             });
         }
-        if(parameter.amount != null)
+
+        if (parameter.amount != null)
         {
             record.amount = parameter.amount.Value;
         }
-        if(parameter.remark != null)
+
+        if (parameter.remark != null)
         {
             record.remark += ", " + parameter.remark;
         }
-        if(parameter.date != null)
+
+        if (parameter.date != null)
         {
             record.date = parameter.date.Value;
         }
@@ -85,14 +89,17 @@ public class AccountController : ControllerBase
             data = record
         });
     }
-    
+
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var result = _storageService.accounts.RemoveAll(r => r.id == id);
-        return result > 0 ? Ok() : NotFound();
+
+        return result > 0
+            ? Ok()
+            : NotFound();
     }
-    
+
     public class UpdateParameters
     {
         public decimal? amount { get; set; }
